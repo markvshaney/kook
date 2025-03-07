@@ -1,0 +1,178 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  extensions = [pgvector]
+}
+
+// Note: We'll handle pgvector separately as Prisma doesn't fully support it natively
+// We'll use raw SQL for vector operations
+
+// User Model
+model User {
+  id            String    @id @default(uuid())
+  username      String    @unique
+  email         String    @unique
+  name          String?
+  passwordHash  String?   @map("password_hash")
+  emailVerified Boolean   @default(false) @map("email_verified")
+  avatarUrl     String?   @map("avatar_url")
+  bio           String?
+  preferences   Json      @default("{}")
+  lastLoginAt   DateTime? @map("last_login_at")
+  isActive      Boolean   @default(true) @map("is_active")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @default(now()) @map("updated_at")
+
+  // Relations
+  sessions        Session[]
+  episodicMemories EpisodicMemory[]
+  userRoles       UserRole[]
+
+  @@map("users")
+}
+
+// Role Model
+model Role {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @map("updated_at")
+
+  // Relations
+  userRoles   UserRole[]
+
+  @@map("roles")
+}
+
+// User-Role join table
+model UserRole {
+  userId    String   @map("user_id")
+  roleId    Int      @map("role_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+// Session Model
+model Session {
+  id           String   @id @default(uuid())
+  userId       String   @map("user_id")
+  token        String   @unique
+  expiresAt    DateTime @map("expires_at")
+  ipAddress    String?  @map("ip_address")
+  userAgent    String?  @map("user_agent")
+  lastActiveAt DateTime @default(now()) @map("last_active_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @map("updated_at")
+
+  // Relations
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+// Content Model
+model Content {
+  id          String   @id @default(uuid())
+  type        String
+  title       String?
+  content     String
+  summary     String?
+  metadata    Json     @default("{}")
+  isPublic    Boolean  @default(false) @map("is_public")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @map("updated_at")
+
+  @@map("content")
+}
+
+// Episodic Memory Model
+model EpisodicMemory {
+  id               String    @id @default(uuid())
+  userId           String    @map("user_id")
+  content          String
+  summary          String?
+  // Note: embedding will be handled with raw SQL as Prisma doesn't support pgvector natively
+  // We'll define it as a JSON field for now and handle conversions in our code
+  embedding        Json?
+  timestamp        DateTime  @default(now())
+  sequencePosition Int?      @map("sequence_position")
+  conversationId   String?   @map("conversation_id")
+  importance       Int       @default(0)
+  surpriseScore    Float?    @map("surprise_score")
+  emotionalValence Float?    @map("emotional_valence")
+  retrievalCount   Int       @default(0) @map("retrieval_count")
+  lastRetrievedAt  DateTime? @map("last_retrieved_at")
+  metadata         Json      @default("{}")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @default(now()) @map("updated_at")
+
+  // Relations
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("episodic_memories")
+}
+
+// Specialty Domain Model
+model SpecialtyDomain {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  slug        String   @unique
+  description String
+  icon        String?
+  color       String?
+  category    String
+  tags        Json     @default("[]")
+  isActive    Boolean  @default(true) @map("is_active")
+  priority    Int      @default(0)
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @map("updated_at")
+
+  // Relations
+  loraAdapters LoraAdapter[]
+
+  @@map("specialty_domains")
+}
+
+// LoRA Adapter Model
+model LoraAdapter {
+  id               String    @id @default(uuid())
+  name             String    @unique
+  version          String
+  domainId         Int?      @map("domain_id")
+  rank             Int
+  alpha            Decimal
+  baseModel        String    @map("base_model")
+  filePath         String    @map("file_path")
+  sizeBytes        BigInt    @map("size_bytes")
+  trainingSteps    Int       @map("training_steps")
+  trainingLoss     Decimal?  @map("training_loss")
+  trainingDataDesc String?   @map("training_data_desc")
+  isActive         Boolean   @default(true) @map("is_active")
+  isDefault        Boolean   @default(false) @map("is_default")
+  evaluationScore  Decimal?  @map("evaluation_score")
+  evaluationMetrics Json?    @map("evaluation_metrics")
+  metadata         Json?     @default("{}")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @default(now()) @map("updated_at")
+
+  // Relations
+  domain           SpecialtyDomain? @relation(fields: [domainId], references: [id])
+
+  @@map("lora_adapters")
+} 
