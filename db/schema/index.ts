@@ -15,7 +15,10 @@ import {
     boolean,
     serial,
     uuid,
-    jsonb
+    jsonb,
+    numeric,
+    bigint,
+    real as float
 } from 'drizzle-orm/pg-core';
 
 // Export column types for use in other schema files
@@ -26,7 +29,10 @@ export const columnTypes = {
     boolean,
     serial,
     uuid,
-    jsonb
+    jsonb,
+    numeric,
+    bigint,
+    float // real type in PostgreSQL
 };
 
 // Helper function to create a timestamped table (with created_at and updated_at)
