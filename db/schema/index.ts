@@ -5,13 +5,50 @@
  * It serves as the central point for schema definitions to be imported by the database connection.
  */
 
-// Re-export all schema tables from their respective files
-// Each schema file should define and export one or more database tables
+import { pgTable } from 'drizzle-orm/pg-core';
 
-// Core schemas will be added in future steps
+// Define re-usable column types and helpers
+import {
+    timestamp,
+    text,
+    integer,
+    boolean,
+    serial,
+    uuid,
+    jsonb
+} from 'drizzle-orm/pg-core';
+
+// Export column types for use in other schema files
+export const columnTypes = {
+    timestamp,
+    text,
+    integer,
+    boolean,
+    serial,
+    uuid,
+    jsonb
+};
+
+// Helper function to create a timestamped table (with created_at and updated_at)
+export function createTimestampedTable(name: string) {
+    return pgTable(name, {
+        createdAt: timestamp('created_at').notNull().defaultNow(),
+        updatedAt: timestamp('updated_at').notNull().defaultNow()
+    });
+}
+
 // Temporary placeholder exports to satisfy imports in db.ts
-export const profilesTable = {};
-export const todosTable = {};
+// These will be replaced with actual table definitions in subsequent steps
+export const profilesTable = pgTable('profiles', {
+    id: serial('id').primaryKey(),
+    name: text('name')
+});
+
+export const todosTable = pgTable('todos', {
+    id: serial('id').primaryKey(),
+    text: text('text').notNull(),
+    completed: boolean('completed').notNull().default(false)
+});
 
 // Future table exports will go here as they are created:
 // export * from './users';
