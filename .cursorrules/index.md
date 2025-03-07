@@ -6,6 +6,11 @@ This document serves as an index to all project rules. For specific guidelines, 
 
 - Frontend: Next.js, TypeScript, Tailwind, Shadcn
 - Backend: Postgres, Supabase, Drizzle ORM, Server Actions
+- AI Infrastructure:
+  - Base model: Mistral 7B with 8-bit quantization
+  - Specialized memory systems (neocortical and hippocampal)
+  - LoRA adapters for specializations
+  - Memory efficiency with KV cache optimization
 - ML: PyTorch, NumPy, Pandas
 
 ## Rule Categories
@@ -18,6 +23,8 @@ This document serves as an index to all project rules. For specific guidelines, 
 - [Storage Rules](./storage.md)
 - [PyTorch Guidelines](./pytorch.md)
 - [Documentation](./documentation.md)
+- [Memory Systems](./memory-systems.md)
+- [Testing Guidelines](./testing.md)
 
 ## Project Structure
 
@@ -36,6 +43,12 @@ This document serves as an index to all project rules. For specific guidelines, 
 - `db` - Database
   - `schema` - Database schemas
 - `lib` - Library code
+  - `ai` - AI model infrastructure
+    - `config.ts` - Model configuration
+    - `model.ts` - Model loading and management
+    - `quantization.ts` - 8-bit quantization support
+    - `tests` - Test utilities
+  - `memory` - Memory systems implementation
   - `hooks` - Custom hooks
 - `public` - Static assets
 - `types` - Type definitions
