@@ -2958,13 +2958,589 @@ Now, let's create the memory-systems.md file with guidelines for the memory syst
 
 _****_
 
-
+```diff
+- 
++ # Memory Systems Guidelines
++ 
++ This document outlines the guidelines for implementing and integrating the dual memory systems (neocortical and hippocampal) in our AI infrastructure.
++ 
++ ## Core Principles
++ 
++ 1. **Dual Memory Architecture**
++    - Maintain clear separation between slow-learning neocortical system (base model) and fast-learning hippocampal system (RAG)
++    - Ensure appropriate communication channels between the systems
++    - Design for gradual consolidation from hippocampal to neocortical memory
++ 
++ 2. **Memory Persistence**
++    - All episodic memories must be stored with appropriate metadata
++    - Implement vector embeddings for semantic search capabilities
++    - Store importance scores to prioritize memory consolidation
++ 
++ 3. **Memory Retrieval**
++    - Use hybrid retrieval combining:
++      - Vector similarity search for semantic relationships
++      - Keyword extraction for precise factual recall
++      - Temporal context for sequential reasoning
++    - Implement caching strategies to avoid redundant retrievals
++ 
++ ## Neocortical System (Slow Learning)
++ 
++ 1. **Base Model Parameters**
++    - Use Mistral 7B as the foundation
++    - Apply 8-bit quantization to reduce memory footprint
++    - Tune sequence length based on available resources
++ 
++ 2. **Fine-tuning Approach**
++    - Implement parameter importance tracking (Synaptic Intelligence)
++    - Use selective regularization based on importance scores
++    - Apply elastic weight consolidation for catastrophic forgetting prevention
++ 
++ 3. **Domain Adaptation**
++    - Integrate LoRA adapters for specific domains
++    - Implement adapter switching based on input classification
++    - Support dynamic loading/unloading of adapters
++ 
++ ## Hippocampal System (Fast Learning)
++ 
++ 1. **RAG Integration**
++    - Implement context-aware retrieval
++    - Maintain balance between diversity and relevance
++    - Support dynamic retrieval count based on query complexity
++ 
++ 2. **Vector Storage**
++    - Use Supabase for vector storage
++    - Implement appropriate vector dimensions (768 or 1024)
++    - Create indices for efficient similarity search
++ 
++ 3. **Memory Importance**
++    - Calculate importance based on surprise (prediction error)
++    - Implement priority queue for replay based on importance
++    - Track forgetting curves for each memory
++ 
++ ## Memory Integration
++ 
++ 1. **Decision Making**
++    - Define clear rules for when to use which memory system
++    - Implement fallback strategies when primary system fails
++    - Support confidence scoring for retrieved memories
++ 
++ 2. **Conflict Resolution**
++    - Develop strategies for resolving contradictory information
++    - Implement versioning for evolving knowledge
++    - Prioritize recency for factual information
++ 
++ 3. **Consolidation Process**
++    - Schedule regular memory consolidation during idle periods
++    - Implement gradual transfer from hippocampal to neocortical system
++    - Use spaced repetition principles for consolidation timing
++ 
++ ## Testing & Evaluation
++ 
++ 1. **Memory Benchmarks**
++    - Define specific benchmarks for retrieval accuracy
++    - Test for catastrophic forgetting mitigation
++    - Measure memory efficiency and optimization
++ 
++ 2. **Integration Tests**
++    - Verify correct interaction between memory systems
++    - Test recovery from system failures
++    - Validate persistence across system restarts
++ 
++ ## Implementation Patterns
++ 
++ ```typescript
++ // Example: Memory Storage Interface
++ interface MemoryItem {
++   content: string;
++   embedding: Float32Array;
++   createdAt: Date;
++   importance: number;
++   metadata: {
++     source: string;
++     context: string;
++     domain: string;
++   };
++ }
++ 
++ // Example: Memory Retrieval
++ async function retrieveRelevantMemories(
++   query: string,
++   options: {
++     limit: number;
++     minSimilarity: number;
++     includeMetadata: boolean;
++   }
++ ): Promise<MemoryItem[]> {
++   // Implementation details...
++ }
++ 
++ // Example: Memory Consolidation
++ async function consolidateMemories(
++   highImportanceOnly: boolean = false
++ ): Promise<ConsolidationResult> {
++   // Implementation details...
++ }
++ ```
++ 
++ Always refer to these patterns when implementing memory-related functionality to ensure consistency across the codebase. 
+```
 
 ---
 
 _****_
 
+Now, let's create the testing.md file with testing guidelines:
 
+---
+
+_****_
+
+```diff
+- 
++ # Testing Guidelines
++ 
++ This document outlines the testing approach, best practices, and conventions for ensuring code quality and reliability throughout the project.
++ 
++ ## Testing Philosophy
++ 
++ 1. **Test-Driven Development**
++    - Write tests before implementing functionality when possible
++    - Focus on behavior over implementation details
++    - Use tests as design documentation
++ 
++ 2. **Test Coverage Goals**
++    - 85%+ coverage for core AI infrastructure code
++    - 70%+ coverage for memory systems
++    - 90%+ coverage for critical user-facing functionality
++ 
++ 3. **Testing Pyramid**
++    - Unit tests: Fast, focused tests for individual functions and classes
++    - Integration tests: Verify communication between components
++    - System tests: End-to-end validation of functionality
++    - Performance tests: Validate memory usage and execution speed
++ 
++ ## Testing Tools
++ 
++ 1. **Framework Selection**
++    - Jest for JavaScript/TypeScript unit and integration testing
++    - React Testing Library for component testing
++    - Playwright for end-to-end testing
++    - PyTest for Python ML code testing
++ 
++ 2. **Mocking and Fixtures**
++    - Use mocks for external dependencies (databases, APIs)
++    - Create reusable fixtures for common test scenarios
++    - Prefer dependency injection to facilitate testing
++ 
++ 3. **Test Data**
++    - Maintain separate test datasets for different components
++    - Version control large test datasets using Git LFS
++    - Create synthetic data generators for edge cases
++ 
++ ## AI-Specific Testing
++ 
++ 1. **Model Testing**
++    - Test model loading with different configurations
++    - Verify quantization accuracy and performance
++    - Test memory footprint with different sequence lengths
++    - Validate model outputs against golden datasets
++ 
++ 2. **Memory System Testing**
++    - Test vector embedding generation and similarity search
++    - Verify importance scoring algorithms
++    - Test memory consolidation correctness
++    - Validate retrieval with different query types
++ 
++ 3. **Performance Testing**
++    - Benchmark inference speed with and without optimizations
++    - Measure memory usage during load and runtime
++    - Test system behavior under low-memory conditions
++    - Profile and optimize critical execution paths
++ 
++ ## Testing Structure
++ 
++ ```typescript
++ // Example: Unit Test Structure
++ describe('Quantizer', () => {
++   describe('quantizeWeights', () => {
++     it('should reduce memory footprint with 8-bit quantization', () => {
++       // Test implementation
++     });
++ 
++     it('should handle empty weights array', () => {
++       // Test implementation
++     });
++ 
++     it('should apply different quantization methods correctly', () => {
++       // Test implementation
++     });
++   });
++ 
++   describe('estimateMemoryUsage', () => {
++     // Tests for memory estimation
++   });
++ });
++ ```
++ 
++ ## Test File Organization
++ 
++ 1. **Directory Structure**
++    - Place test files alongside the code they test with `.test.ts` or `.spec.ts` extension
++    - Group test utilities in `__tests__/helpers` directories
++    - Store test fixtures in `__fixtures__` directories
++ 
++ 2. **Naming Conventions**
++    - Name test files with the same name as the file they test (e.g., `quantization.test.ts`)
++    - Use descriptive test names that explain the behavior being tested
++    - Group related tests with nested `describe` blocks
++ 
++ 3. **Test Tags**
++    - Tag tests with appropriate categories:
++      - `@unit` for unit tests
++      - `@integration` for integration tests
++      - `@slow` for time-consuming tests
++      - `@memory` for tests requiring significant memory
++ 
++ ## Best Practices
++ 
++ 1. **Test Independence**
++    - Each test should run in isolation
++    - Avoid test interdependencies
++    - Clean up resources after each test
++ 
++ 2. **Test Readability**
++    - Use the AAA pattern (Arrange, Act, Assert)
++    - Include descriptive failure messages
++    - Document complex test arrangements
++ 
++ 3. **Continuous Integration**
++    - Run unit and fast integration tests on every PR
++    - Schedule slower tests for nightly builds
++    - Monitor test coverage trends over time
++ 
++ 4. **Performance Testing**
++    - Set up baseline performance metrics
++    - Alert on significant performance regressions
++    - Include memory profiling in CI pipeline
++ 
++ ## Specialized AI Evaluation
++ 
++ 1. **Accuracy Metrics**
++    - Define domain-specific evaluation metrics
++    - Implement evaluation harnesses for specialized tasks
++    - Track performance across different model versions
++ 
++ 2. **Hallucination Detection**
++    - Implement specific tests to detect model hallucinations
++    - Validate factual accuracy against reference datasets
++    - Measure consistency across multiple queries
++ 
++ 3. **Forgetting Measurement**
++    - Test for catastrophic forgetting across fine-tuning cycles
++    - Measure memory retention with standardized benchmarks
++    - Validate temporal consistency in long-term memory 
+```
+
+---
+
+_****_
+
+Now, let's create the typescript.md file with enhanced TypeScript typing guidelines:
+
+---
+
+_****_
+
+```diff
+- 
++ # TypeScript Typing Guidelines
++ 
++ This document outlines our TypeScript standards and best practices for maintaining a type-safe codebase, with special considerations for AI model interactions.
++ 
++ ## Core Typing Principles
++ 
++ 1. **Strict Type Safety**
++    - Enable `strict: true` in tsconfig.json
++    - Avoid using `any` type - use `unknown` when type is truly indeterminate
++    - Never use type assertions without verification (no `as` without checks)
++    - Avoid non-null assertions (`!`) in favor of proper null checking
++ 
++ 2. **Type Explicitness**
++    - Always specify return types for functions
++    - Use explicit generic types rather than relying on inference
++    - Document complex types with explanatory comments
++    - Use descriptive type names that indicate purpose, not just structure
++ 
++ 3. **Type Organization**
++    - Group related types in dedicated type files
++    - Export types that are used across multiple files
++    - Define component prop types adjacent to the component
++    - Use namespaces to organize domain-specific types
++ 
++ ## AI and ML-Specific Types
++ 
++ 1. **Model Parameters**
++    - Define strict interfaces for model configurations
++    - Use discriminated unions for different model types
++    - Include documentation comments for parameter ranges and impact
++ 
++ ```typescript
++ interface ModelConfig {
++   /** 
++    * Unique identifier for the model 
++    */
++   modelId: string;
++   
++   /**
++    * Maximum sequence length (32-4096)
++    * Longer sequences require more memory
++    */
++   maxSequenceLength: number;
++   
++   /**
++    * Temperature (0.0-1.0)
++    * Higher values increase randomness
++    */
++   temperature: number;
++   
++   /**
++    * Whether to use quantization
++    */
++   useQuantization: boolean;
++ }
++ ```
++ 
++ 2. **Tensor and Vector Types**
++    - Define specific types for different tensor shapes and dimensions
++    - Use TypedArrays (Float32Array, etc.) for numeric data
++    - Include dimensionality information in type names
++ 
++ ```typescript
++ /** Vector embedding with 768 dimensions */
++ type Embedding768 = Float32Array;
++ 
++ /** 3D Tensor with shape [batchSize, seqLength, hiddenSize] */
++ interface Tensor3D {
++   shape: [number, number, number];
++   data: Float32Array;
++ }
++ ```
++ 
++ 3. **Memory Types**
++    - Define clear interfaces for different memory types
++    - Use generic types for flexible memory content
++    - Include metadata types for memory context
++ 
++ ```typescript
++ interface MemoryItem<T> {
++   content: T;
++   embedding: Float32Array;
++   importance: number;
++   timestamp: Date;
++   metadata: MemoryMetadata;
++ }
++ 
++ interface MemoryMetadata {
++   source: string;
++   context: string;
++   domain?: string;
++   isVerified: boolean;
++ }
++ ```
++ 
++ ## Advanced Type Patterns
++ 
++ 1. **Discriminated Unions**
++    - Use discriminated unions for API responses and state management
++    - Include status field for loading states
++    - Tag different variations with explicit type fields
++ 
++ ```typescript
++ type ModelStatus = 
++   | { status: 'not_loaded' }
++   | { status: 'loading', progress: number }
++   | { status: 'ready', model: LoadedModel }
++   | { status: 'error', error: Error };
++ ```
++ 
++ 2. **Utility Types**
++    - Use built-in utility types appropriately (Partial, Required, Pick, etc.)
++    - Create custom utility types for project-specific needs
++    - Document utility types with examples
++ 
++ ```typescript
++ /** Make all properties of T readonly except for those in K */
++ type ReadonlyExcept<T, K extends keyof T> = Readonly<Omit<T, K>> & Pick<T, K>;
++ 
++ /** Configuration that can be updated after initialization */
++ type MutableModelConfig = ReadonlyExcept<ModelConfig, 'temperature' | 'topP'>;
++ ```
++ 
++ 3. **Type Guards**
++    - Implement type guards for runtime type checking
++    - Use consistent naming patterns for guard functions
++    - Return type predicates for better type narrowing
++ 
++ ```typescript
++ function isLoadedModel(value: unknown): value is LoadedModel {
++   return (
++     typeof value === 'object' && 
++     value !== null &&
++     'config' in value &&
++     'loadedAt' in value &&
++     'isReady' in value
++   );
++ }
++ ```
++ 
++ ## Async Types
++ 
++ 1. **Promise Types**
++    - Always specify the resolved type for Promises
++    - Use async/await instead of Promise chains
++    - Create utility types for common async patterns
++ 
++ ```typescript
++ /** Result of an async operation that might fail */
++ type AsyncResult<T> = Promise<{
++   success: true;
++   data: T;
++ } | {
++   success: false;
++   error: Error;
++ }>;
++ 
++ /** Retry policy for async operations */
++ interface RetryOptions {
++   maxAttempts: number;
++   delayMs: number;
++   backoffFactor: number;
++ }
++ ```
++ 
++ 2. **API Types**
++    - Define request and response types for all API endpoints
++    - Use consistent naming patterns (e.g., `EndpointNameRequest`, `EndpointNameResponse`)
++    - Include validation types to match backend constraints
++ 
++ ```typescript
++ interface ModelInferenceRequest {
++   prompt: string;
++   modelId: string;
++   parameters?: ModelInferenceParameters;
++ }
++ 
++ interface ModelInferenceParameters {
++   temperature?: number;
++   maxTokens?: number;
++   stopSequences?: string[];
++ }
++ 
++ interface ModelInferenceResponse {
++   completion: string;
++   tokenCount: number;
++   timingMs: number;
++ }
++ ```
++ 
++ ## Type Testing
++ 
++ 1. **Type Testing with TypeScript**
++    - Use conditional types to test type relationships
++    - Create test files specifically for type checking
++    - Verify complex type interactions with compile-time tests
++ 
++ ```typescript
++ // Type test to ensure model configurations are compatible
++ type AssertCompatible<T, U extends T> = true;
++ type ModelConfigTest = AssertCompatible<BaseModelConfig, QuantizedModelConfig>;
++ ```
++ 
++ 2. **Integration with JSDoc**
++    - Use JSDoc annotations to enhance type documentation
++    - Include examples in documentation
++    - Document edge cases and potential pitfalls
++ 
++ ```typescript
++ /**
++  * Calculates memory requirement for a model
++  * 
++  * @param config - Model configuration
++  * @returns Memory estimate in bytes
++  * 
++  * @example
++  * ```ts
++  * const memoryNeeded = estimateMemoryUsage({
++  *   modelId: "mistral-7b",
++  *   maxSequenceLength: 2048,
++  *   useQuantization: true
++  * });
++  * ```
++  */
++ function estimateMemoryUsage(config: ModelConfig): number {
++   // Implementation...
++ }
++ ```
++ 
++ ## Best Practices
++ 
++ 1. **Avoid Type Hacks**
++    - Never use `@ts-ignore` comments
++    - Avoid using `any` to bypass type checking
++    - Fix type errors properly rather than working around them
++ 
++ 2. **Type Evolution**
++    - Design types to be extensible for future requirements
++    - Use interface merging for extensible definitions
++    - Document breaking type changes clearly
++ 
++ 3. **Performance Considerations**
++    - Be mindful of TypeScript compilation performance
++    - Avoid excessively complex conditional types
++    - Split large type files when they grow unwieldy 
+```
+
+---
+
+_****_
+
+I've successfully completed Step 0 from your project implementation plan! Let me summarize what I've done:
+
+1. **Updated `.cursorrules/index.md`**:
+   - Added comprehensive AI infrastructure details to the tech stack section
+   - Added links to the new documentation files (memory-systems.md and testing.md)
+   - Updated the project structure to include AI-related components
+
+2. **Created `.cursorrules/memory-systems.md`**:
+   - Detailed guidelines for the dual memory architecture (neocortical and hippocampal)
+   - Defined best practices for memory persistence, retrieval, and integration
+   - Included example code patterns for memory-related functionality
+
+3. **Created `.cursorrules/testing.md`**:
+   - Established testing philosophy, coverage goals, and the testing pyramid
+   - Provided AI-specific testing guidelines for models and memory systems
+   - Outlined best practices for test structure, organization, and specialized AI evaluation
+
+4. **Created `.cursorrules/typescript.md`**:
+   - Defined strict TypeScript typing principles
+   - Added AI and ML-specific type patterns and examples
+   - Included advanced type patterns, async types, and best practices
+
+These documentation files provide a solid foundation for your project, ensuring consistent coding practices across the codebase. They are particularly focused on the AI infrastructure components we've been working on, including the Mistral 7B model with 8-bit quantization.
+
+Would you like me to make any adjustments to these documentation files, or shall we proceed to the next step in your implementation plan?
+
+---
+
+_**User**_
+
+now step 0.5
+
+---
+
+_**Assistant**_
+
+<think>Let me focus on Step 0.5 from the project implementation plan. According
 
 ---
 
