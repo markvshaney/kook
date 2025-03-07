@@ -37,8 +37,14 @@ export function createTimestampedTable(name: string) {
     });
 }
 
+// Export all schema tables from their respective files
+export * from './users';
+export * from './sessions';
+export * from './content';
+
 // Temporary placeholder exports to satisfy imports in db.ts
 // These will be replaced with actual table definitions in subsequent steps
+// NOTE: These can be removed once the database connection is updated to use the actual tables
 export const profilesTable = pgTable('profiles', {
     id: serial('id').primaryKey(),
     name: text('name')
