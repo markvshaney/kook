@@ -1,10 +1,7 @@
 #!/usr/bin/env sh
 
-# Temporarily disable TypeScript checking during ESM migration
-# We'll re-enable this once all migration issues are fixed
-#
-# TODO: Re-enable this after fixing all TypeScript errors
-# npm run type-check || exit 1
+# Run TypeScript type checking
+npm run type-check || exit 1
 
 # Run lint-staged to check code quality
 npx lint-staged

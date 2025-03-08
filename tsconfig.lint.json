@@ -12,7 +12,10 @@
     "noEmit": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": [
@@ -22,6 +25,10 @@
     "**/*.mjs",
     "jest.config.mjs",
     "jest.setup.mjs",
-    "__mocks__"
+    "__mocks__",
+    "db/schema/**",
+    "db/db.ts",
+    "drizzle.config.ts",
+    "lib/ai/lora.ts"
   ]
-} 
+}
