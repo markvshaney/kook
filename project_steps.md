@@ -3,6 +3,7 @@
 ## Project Setup and Infrastructure
 
 - [x] Step 0: Enhance CursorRules Documentation
+
   - **Task**: Update and enhance CursorRules documentation
   - **Files**:
     - `.cursorrules/index.md`: Update with latest tech stack information
@@ -33,6 +34,7 @@
 ## Project Setup and Infrastructure
 
 - [ ] Step 2: Set Up Database Schema - Core Tables
+
   - **Task**: Define core database tables for the system (users, sessions, content)
   - **Files**:
     - `db/schema/index.ts`: Update to export all schema tables
@@ -43,6 +45,7 @@
   - **User Instructions**: None
 
 - [ ] Step 3: Set Up Database Schema - Memory Systems
+
   - **Task**: Define tables for memory systems including vectors, importance scores, and specialty domains
   - **Files**:
     - `db/schema/memory.ts`: Create memory-related tables including vector storage
@@ -52,6 +55,7 @@
   - **User Instructions**: None
 
 - [ ] Step 4: Update Database Connection
+
   - **Task**: Update the database connection to use the complete schema
   - **Files**:
     - `db/db.ts`: Update the schema import and configuration
@@ -59,6 +63,7 @@
   - **User Instructions**: None
 
 - [ ] Step 5: Install AI and Database Dependencies
+
   - **Task**: Add necessary dependencies for AI and database functionality
   - **Files**:
     - `package.json`: Update with new dependencies
@@ -76,6 +81,7 @@
 ## Core AI Infrastructure
 
 - [ ] Step 7: Create Model Loading Infrastructure
+
   - **Task**: Implement the core functionality for loading and managing the Mistral 7B base model
   - **Files**:
     - `lib/ai/model.ts`: Create model loading and management functions
@@ -84,6 +90,7 @@
   - **User Instructions**: None
 
 - [ ] Step 8: Implement 8-bit Quantization
+
   - **Task**: Add 8-bit quantization support for memory efficiency
   - **Files**:
     - `lib/ai/quantization.ts`: Create quantization utilities
@@ -92,6 +99,7 @@
   - **User Instructions**: None
 
 - [ ] Step 9: Create LoRA Adapter Framework
+
   - **Task**: Implement LoRA adapter loading and switching for domain specializations
   - **Files**:
     - `lib/ai/lora.ts`: Create LoRA adapter management utilities
@@ -100,6 +108,7 @@
   - **User Instructions**: None
 
 - [ ] Step 10: Implement Vector Embedding Pipeline
+
   - **Task**: Create the embedding pipeline for converting interactions to vectors
   - **Files**:
     - `lib/ai/embeddings.ts`: Create embedding generation utilities
@@ -118,6 +127,7 @@
 ## Memory Architecture
 
 - [ ] Step 12: Implement Neocortical System
+
   - **Task**: Create the slow-learning neocortical system based on Mistral 7B
   - **Files**:
     - `lib/memory/neocortical.ts`: Create neocortical system implementation
@@ -126,6 +136,7 @@
   - **User Instructions**: None
 
 - [ ] Step 13: Implement Hippocampal Fast Learning System
+
   - **Task**: Create the fast-learning hippocampal system using RAG with vector database
   - **Files**:
     - `lib/memory/hippocampal.ts`: Create hippocampal system implementation
@@ -144,6 +155,7 @@
 ## Specialization Framework
 
 - [ ] Step 15: Implement Input Classification and Routing
+
   - **Task**: Create the system to classify inputs and route them to appropriate specializations
   - **Files**:
     - `lib/specialization/classifier.ts`: Create input classification
@@ -152,6 +164,7 @@
   - **User Instructions**: None
 
 - [ ] Step 16: Implement Factual Knowledge Specialization
+
   - **Task**: Create the factual knowledge (semantic memory) specialization
   - **Files**:
     - `lib/specialization/factual.ts`: Implement factual knowledge specialization
@@ -160,6 +173,7 @@
   - **User Instructions**: None
 
 - [ ] Step 17: Implement Procedural Memory Specialization
+
   - **Task**: Create the procedural memory (skills and processes) specialization
   - **Files**:
     - `lib/specialization/procedural.ts`: Implement procedural memory specialization
@@ -167,6 +181,7 @@
   - **User Instructions**: None
 
 - [ ] Step 18: Implement Social Interaction Memory Specialization
+
   - **Task**: Create the social interaction memory specialization
   - **Files**:
     - `lib/specialization/social.ts`: Implement social interaction memory specialization
@@ -174,6 +189,7 @@
   - **User Instructions**: None
 
 - [ ] Step 19: Implement Episodic Memory Specialization
+
   - **Task**: Create the episodic memory (temporal experiences) specialization
   - **Files**:
     - `lib/specialization/episodic.ts`: Implement episodic memory specialization
@@ -192,6 +208,7 @@
 ## Memory Management
 
 - [ ] Step 21: Implement Prediction Error Calculation
+
   - **Task**: Create system for calculating prediction error for memory importance
   - **Files**:
     - `lib/memory-management/prediction-error.ts`: Implement prediction error calculation
@@ -200,6 +217,7 @@
   - **User Instructions**: None
 
 - [ ] Step 22: Implement Priority Queue for Memory Replay
+
   - **Task**: Create priority queue based on surprise scores for memory replay
   - **Files**:
     - `lib/memory-management/priority-queue.ts`: Implement priority queue
@@ -208,6 +226,7 @@
   - **User Instructions**: None
 
 - [ ] Step 23: Implement Memory Consolidation Scheduler
+
   - **Task**: Create scheduler for memory consolidation
   - **Files**:
     - `lib/memory-management/scheduler.ts`: Implement consolidation scheduler
@@ -216,6 +235,7 @@
   - **User Instructions**: None
 
 - [ ] Step 24: Implement Parameter Importance Tracking
+
   - **Task**: Create Synaptic Intelligence for parameter importance tracking
   - **Files**:
     - `lib/memory-management/synaptic-intelligence.ts`: Implement parameter importance tracking
@@ -224,6 +244,7 @@
   - **User Instructions**: None
 
 - [ ] Step 25: Implement Selective Regularization
+
   - **Task**: Create regularization based on importance scores
   - **Files**:
     - `lib/memory-management/regularization.ts`: Implement selective regularization
@@ -231,6 +252,7 @@
   - **User Instructions**: None
 
 - [ ] Step 26: Implement Conflict Resolution
+
   - **Task**: Create system for resolving contradictory information
   - **Files**:
     - `lib/memory-management/conflict-resolution.ts`: Implement conflict resolution
@@ -247,6 +269,7 @@
 ## Fine-tuning Pipeline
 
 - [ ] Step 28: Create PyTorch Training Loop
+
   - **Task**: Implement efficient PyTorch training loop for fine-tuning
   - **Files**:
     - `lib/training/loop.ts`: Create training loop implementation
@@ -255,6 +278,7 @@
   - **User Instructions**: None
 
 - [ ] Step 29: Implement Checkpoint Management
+
   - **Task**: Create system for managing model checkpoints
   - **Files**:
     - `lib/training/checkpoints.ts`: Implement checkpoint management
@@ -272,6 +296,7 @@
 ## Web Frontend - Core Components
 
 - [ ] Step 31: Set Up UI Component Library
+
   - **Task**: Set up shadcn/ui component library with Tailwind CSS
   - **Files**:
     - `components.json`: Update components configuration
@@ -280,6 +305,7 @@
   - **User Instructions**: None
 
 - [ ] Step 32: Create Theme Provider
+
   - **Task**: Implement theme provider with dark/light mode
   - **Files**:
     - `components/theme-provider.tsx`: Create theme provider component
@@ -289,6 +315,7 @@
   - **User Instructions**: None
 
 - [ ] Step 33: Create Layout Components
+
   - **Task**: Create reusable layout components
   - **Files**:
     - `components/layout/header.tsx`: Create header component
@@ -300,6 +327,7 @@
   - **User Instructions**: None
 
 - [ ] Step 34: Create Chat Interface Components
+
   - **Task**: Create components for the chat/query interface
   - **Files**:
     - `components/chat/message.tsx`: Create message component
@@ -322,6 +350,7 @@
 ## Web Frontend - Pages and Features
 
 - [ ] Step 36: Create Home Page
+
   - **Task**: Implement the main home page with chat interface
   - **Files**:
     - `app/page.tsx`: Update home page with chat interface
@@ -330,6 +359,7 @@
   - **User Instructions**: None
 
 - [ ] Step 37: Implement Chat Functionality
+
   - **Task**: Add functionality to the chat interface
   - **Files**:
     - `app/api/chat/route.ts`: Create chat API route
@@ -339,6 +369,7 @@
   - **User Instructions**: None
 
 - [ ] Step 38: Create Model Management Page
+
   - **Task**: Implement the model management page
   - **Files**:
     - `app/model/page.tsx`: Create model management page
@@ -349,6 +380,7 @@
   - **User Instructions**: None
 
 - [ ] Step 39: Create Memory Visualization Page
+
   - **Task**: Implement the memory visualization page
   - **Files**:
     - `app/memory/page.tsx`: Create memory visualization page
@@ -373,6 +405,7 @@
 ## API Routes and Integration
 
 - [ ] Step 41: Create Model API Routes
+
   - **Task**: Implement API routes for model interaction
   - **Files**:
     - `app/api/model/query/route.ts`: Create model query API
@@ -382,6 +415,7 @@
   - **User Instructions**: None
 
 - [ ] Step 42: Create Memory API Routes
+
   - **Task**: Implement API routes for memory management
   - **Files**:
     - `app/api/memory/store/route.ts`: Create memory storage API
@@ -403,6 +437,7 @@
 ## Optimization and Performance
 
 - [ ] Step 44: Implement GPU Optimization
+
   - **Task**: Create optimizations for consumer GPUs
   - **Files**:
     - `lib/optimization/gpu.ts`: Create GPU optimization utilities
@@ -411,6 +446,7 @@
   - **User Instructions**: None
 
 - [ ] Step 45: Implement Sparse Activation
+
   - **Task**: Create sparse activation optimizations
   - **Files**:
     - `lib/optimization/sparse-activation.ts`: Implement sparse activation
@@ -431,6 +467,7 @@
 ## Testing Framework
 
 - [x] Step 47: Set Up Jest Testing
+
   - **Task**: Set up Jest for backend testing
   - **Files**:
     - `jest.config.js`: Create Jest configuration
@@ -439,6 +476,7 @@
   - **User Instructions**: Run `npm install` after this step to install testing dependencies
 
 - [x] Step 48: Create Unit Tests for Core Functions
+
   - **Task**: Implement unit tests for core AI functions
   - **Files**:
     - `__tests__/lib/ai/model.test.ts`: Create model tests
@@ -448,6 +486,7 @@
   - **User Instructions**: None
 
 - [x] Step 49: Set Up React Testing Library
+
   - **Task**: Set up React Testing Library for frontend components
   - **Files**:
     - `jest.setup.js`: Create Jest setup file for React Testing Library
@@ -456,6 +495,7 @@
   - **User Instructions**: None
 
 - [x] Step 50: Create Specialized Evaluation Framework
+
   - **Task**: Implement specialized model evaluation framework
   - **Files**:
     - `lib/evaluation/forgetting.ts`: Create forgetting benchmarks
@@ -465,3 +505,9 @@
     - `components/evaluation/results.tsx`: Create evaluation results component
   - **Step Dependencies**: Step 49
   - **User Instructions**: None
+
+- [ ] Set up code quality tools (Husky, ESLint, Prettier)
+  - [x] Configure Husky for pre-commit hooks
+  - [x] Set up lint-staged for staged files checking
+  - [x] Create VS Code settings for developer experience
+  - [x] Document code quality approach in CODE_QUALITY.md

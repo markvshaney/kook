@@ -1,0 +1,28 @@
+[33mcommit 52ca1031fda51c96bb883ee1f4da9fb7b74931c6[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m
+Author: Bruce <lbheinke@gmail.com>
+Date:   Fri Mar 7 21:51:26 2025 -0500
+
+    Temporarily bypass TypeScript checking in pre-commit hook to allow ESM migration
+
+A	.husky/pre-commit
+M	.specstory/history/checking-off-completed-project-steps.md
+A	__mocks__/fileMock.js
+A	__mocks__/styleMock.js
+A	__tests__/components/Button.test.tsx
+A	__tests__/lib/ai/model.test.ts
+A	__tests__/lib/ai/quantization.test.ts
+A	__tests__/lib/supabase.test.ts
+A	__tests__/lib/utils/example.test.ts
+A	babel.config.cjs
+A	jest.config.cjs
+A	jest.config.js
+A	jest.setup.cjs
+A	jest.setup.js
+A	next.config.cjs
+D	next.config.ts
+M	package-lock.json
+M	package.json
+M	project_steps.md
+A	tsconfig.jest.json
+A	tsconfig.lint.json
+A	tsconfig.test.json
