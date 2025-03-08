@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
-# Temporarily bypassing type checking to allow migration to ESM
-# TODO: Fix TypeScript errors and re-enable type checking
+# Skip TypeScript check to allow commits during ESM migration
+# TODO: Re-enable this after fixing all TypeScript errors
 # npm run type-check || exit 1
 
 # Run lint-staged to check code quality

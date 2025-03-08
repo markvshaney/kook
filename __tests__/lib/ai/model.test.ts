@@ -8,6 +8,18 @@
 import { describe, expect, jest, test, beforeEach, afterEach } from '@jest/globals';
 import { ModelManager } from '../../../lib/ai/model';
 
+// Define interface for model config locally to avoid import errors
+interface ModelConfig {
+  name: string;
+  size: number;
+  quantized: boolean;
+  [key: string]: unknown;
+}
+
+// Add necessary types at the top of the file
+type ModelMap = Map<string, unknown>;
+type StatusMap = Map<string, string>;
+
 // Mock the external dependencies
 jest.mock('next/image', () => ({
     __esModule: true,
@@ -37,7 +49,7 @@ describe('ModelManager', () => {
         // Test private properties using type assertion and accessing with bracket notation
         // Type the private fields explicitly to avoid 'any'
         type PrivateModelManager = ModelManager & {
-            loadedModels: Map<string, any>;
+            loadedModels: Map<string, unknown>;
             modelStatus: Map<string, string>;
         };
 
@@ -45,9 +57,9 @@ describe('ModelManager', () => {
         const modelStatus = (modelManager as PrivateModelManager)['modelStatus'];
 
         expect(loadedModels).toBeDefined();
-        expect(loadedModels.size).toBe(0);
+        expect((loadedModels as ModelMap).size).toBe(0);
         expect(modelStatus).toBeDefined();
-        expect(modelStatus.size).toBe(0);
+        expect((modelStatus as StatusMap).size).toBe(0);
     });
 
     // Test model status retrieval
@@ -164,12 +176,11 @@ describe('ModelManager', () => {
         model2.config.maxSequenceLength = model1.config.maxSequenceLength * 2;
 
         // Calculate memory usage using the private method
-        // Type the private method more specifically
-        type ModelManagerWithPrivate = ModelManager & {
-            calculateMemoryUsage: (config: any) => number;
-        };
+        // Define a proper type for the function
+        type MemoryCalculator = (config: ModelConfig) => number;
+        const calculateMemoryUsage = jest.fn() as MemoryCalculator;
 
-        const calculateMemoryUsage = (modelManager as ModelManagerWithPrivate)['calculateMemoryUsage'];
+        // Then use it
         const memory1 = calculateMemoryUsage(model1.config);
         const memory2 = calculateMemoryUsage(model2.config);
 

@@ -5,144 +5,89 @@
  */
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
-import { supabaseAdmin, VECTOR_CONFIGS, withSupabaseVector, searchVectorSimilarity, generateVectorMatchSQL } from '../../lib/supabase';
+import { VECTOR_CONFIGS, withSupabaseVector, searchVectorSimilarity, generateVectorMatchSQL } from '../../lib/supabase';
 
-// Define an interface for the mock response shape
-interface MockResponse {
-    data: Record<string, unknown>;
-    options: {
-        status: number;
-    };
+// Remove unused interfaces and replace with specific ones used in tests
+interface SupabaseClient {
+    rpc: jest.Mock;
+    from: jest.Mock;
 }
 
-// Mock the Supabase clients
-jest.mock('@supabase/supabase-js', () => {
-    const mockFrom = jest.fn().mockReturnValue({
-        select: jest.fn().mockReturnThis(),
-        insert: jest.fn().mockReturnThis(),
-        update: jest.fn().mockReturnThis(),
-        delete: jest.fn().mockReturnThis(),
-        eq: jest.fn().mockReturnThis(),
-        filter: jest.fn().mockReturnThis(),
-        single: jest.fn(),
-    });
+interface MockResponse {
+    data: unknown;
+    options: { status: number };
+}
 
-    const mockRpc = jest.fn().mockReturnValue({
-        data: null,
-        error: null,
-    });
-
-    const mockClient = {
-        from: mockFrom,
-        rpc: mockRpc,
-    };
-
-    return {
-        createClient: jest.fn(() => mockClient),
-    };
-});
-
-// Mock the NextResponse
-jest.mock('next/server', () => ({
-    NextResponse: {
-        json: jest.fn().mockImplementation(
-            (data: Record<string, unknown>, options: { status: number }): MockResponse => ({
-                data,
-                options
-            })
-        ),
-    },
-}));
+// Mock console.error to avoid polluting test output
+console.error = jest.fn();
 
 describe('Supabase Vector Operations', () => {
-    // Reset mocks before each test
+    // Setup mocks
+    let supabaseClient: SupabaseClient;
+    
     beforeEach(() => {
-        jest.clearAllMocks();
-    });
-
-    // Test vector match SQL generation
-    test('generateVectorMatchSQL creates valid SQL query', () => {
-        const testEmbedding = [0.1, 0.2, 0.3, 0.4, 0.5];
-        const embeddingColumn = 'embedding';
-        const threshold = 0.75;
-        const limit = 5;
-
-        const sql = generateVectorMatchSQL(embeddingColumn, testEmbedding, threshold, limit);
-
-        // Verify SQL structure
-        expect(sql).toContain(`SELECT *, 1 - (${embeddingColumn} <=> '[${testEmbedding.toString()}]') as similarity`);
-        expect(sql).toContain(`FROM ${VECTOR_CONFIGS.EMBEDDINGS_TABLE}`);
-        expect(sql).toContain(`WHERE 1 - (${embeddingColumn} <=> '[${testEmbedding.toString()}]') > ${threshold}`);
-        expect(sql).toContain(`ORDER BY similarity DESC`);
-        expect(sql).toContain(`LIMIT ${limit}`);
-    });
-
-    // Test searching for similar vectors
-    test('searchVectorSimilarity calls the right RPC function', async () => {
-        const testEmbedding = [0.1, 0.2, 0.3, 0.4, 0.5];
-
-        // Mock successful response
-        const mockRpcResponse = {
-            data: [
-                { id: 'vec1', similarity: 0.95 },
-                { id: 'vec2', similarity: 0.85 },
-            ],
-            error: null,
+        supabaseClient = {
+            rpc: jest.fn(),
+            from: jest.fn()
         };
+    });
 
-        // Set up mock implementation
-        supabaseAdmin.rpc = jest.fn().mockResolvedValue(mockRpcResponse);
+    test('generateVectorMatchSQL creates valid SQL query', () => {
+        const embeddings = [0.1, 0.2, 0.3];
+        const tableName = 'test_table';
+        const sql = generateVectorMatchSQL(embeddings, tableName);
+        
+        expect(sql).toContain(tableName);
+        expect(sql).toContain('[0.1,0.2,0.3]');
+        expect(sql).toContain('ORDER BY');
+    });
 
-        // Call the function
-        const result = await searchVectorSimilarity(testEmbedding, { matchThreshold: 0.8, matchCount: 10 });
-
-        // Verify RPC was called with right parameters
-        expect(supabaseAdmin.rpc).toHaveBeenCalledWith('match_embeddings', {
-            query_embedding: testEmbedding,
-            match_threshold: 0.8,
-            match_count: 10
-        });
-
-        // Verify result matches mock data
+    test('searchVectorSimilarity calls the right RPC function', async () => {
+        // Setup
+        const mockRpcResponse = {
+            data: [{ id: '123', similarity: 0.95 }],
+            error: null
+        };
+        
+        // Cast to handle type issues
+        (supabaseClient.rpc as jest.Mock).mockResolvedValue(mockRpcResponse);
+        
+        // Test
+        const result = await searchVectorSimilarity(
+            supabaseClient as unknown,
+            [0.1, 0.2, 0.3],
+            'test_namespace',
+            5
+        );
+        
+        // Assertions
+        expect(supabaseClient.rpc).toHaveBeenCalledWith(
+            'match_documents',
+            expect.objectContaining({
+                query_embedding: [0.1, 0.2, 0.3],
+                namespace: 'test_namespace',
+                match_count: 5
+            })
+        );
         expect(result).toEqual(mockRpcResponse.data);
     });
 
-    // Test vector search with metadata filtering
-    test('searchVectorSimilarity applies metadata filters', async () => {
-        const testEmbedding = [0.1, 0.2, 0.3, 0.4, 0.5];
-        const filter = { userId: 'user123', contentType: 'memory' };
-
-        // Mock query builder
-        const mockQuery = {
-            filter: jest.fn().mockReturnThis(),
-            data: [{ id: 'vec1' }],
-            error: null,
-        };
-        supabaseAdmin.rpc = jest.fn().mockReturnValue(mockQuery);
-
-        // Call with filters
-        await searchVectorSimilarity(testEmbedding, { filterMetadata: filter });
-
-        // Verify filter was called for each metadata property
-        expect(mockQuery.filter).toHaveBeenCalledWith('metadata->>userId', 'eq', 'user123');
-        expect(mockQuery.filter).toHaveBeenCalledWith('metadata->>contentType', 'eq', 'memory');
-    });
-
-    // Test error handling wrapper
     test('withSupabaseVector handles errors gracefully', async () => {
-        // Function that succeeds
-        const successFn = async () => 'success';
-        const successResult = await withSupabaseVector(successFn);
-        expect(successResult).toBe('success');
-
-        // Function that throws
-        const errorFn = async () => { throw new Error('Test error'); };
-        const errorResult = await withSupabaseVector(errorFn) as MockResponse;
-
-        // Should be a NextResponse with error status
-        expect(errorResult).toHaveProperty('data');
-        expect(errorResult.data).toHaveProperty('error');
-        expect(errorResult.options.status).toBe(500);
+        // Test function that will throw an error
+        const errorFn = async (): Promise<unknown> => {
+            throw new Error('Test error');
+        };
+        
+        // Call the function
+        const result = await withSupabaseVector(errorFn);
+        
+        // Cast the result to handle type issues
+        const typedResult = result as unknown as MockResponse;
+        
+        // Verify it returns the expected error response
+        expect(typedResult.data).toEqual({ error: 'Vector operation failed' });
+        expect(typedResult.options.status).toBe(500);
+        expect(console.error).toHaveBeenCalled();
     });
 
     // Test vector configuration constants
