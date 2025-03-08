@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 
-# Skip TypeScript check to allow commits during ESM migration
+# Temporarily disable TypeScript checking during ESM migration
+# We'll re-enable this once all migration issues are fixed
+#
 # TODO: Re-enable this after fixing all TypeScript errors
 # npm run type-check || exit 1
 
