@@ -48,6 +48,7 @@
     "@testing-library/react": "^14.1.2",
     "@testing-library/user-event": "^14.5.2",
     "@types/aria-query": "^5.0.4",
+    "@types/find-cache-dir": "^3.2.1",
     "@types/istanbul-lib-coverage": "^2.0.6",
     "@types/jest": "^29.5.12",
     "@types/node": "^20",
